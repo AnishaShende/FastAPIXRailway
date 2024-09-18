@@ -1,4 +1,4 @@
-faiss_cpu==1.8.0.post1
+faiss_cpu==1.8.0
 fastapi==0.115.0
 huggingface_hub==0.24.7
 langchain==0.3.0
