@@ -38,9 +38,45 @@ app.add_middleware(
 # embeddings_path = "data/embeddings.npy"
 # chunks_path = "data/chunks.json"
 
-embeddings_path = "https://raw.githubusercontent.com/AnishaShende/FastAPIXRailway/main/Data/chunks.json"
-chunks_path = "https://github.com/AnishaShende/FastAPIXRailway/raw/main/Data/embeddings.npy"
+# embeddings_path = "https://raw.githubusercontent.com/AnishaShende/FastAPIXRailway/main/Data/chunks.json"
+# chunks_path = "https://github.com/AnishaShende/FastAPIXRailway/raw/main/Data/embeddings.npy"
+def download_file(url, local_path):
+    # Download the file from the URL
+    response = requests.get(url)
+    if response.status_code == 200:
+        # Ensure the directory exists
+        os.makedirs(os.path.dirname(local_path), exist_ok=True)
+        # Write the file content to the local path
+        with open(local_path, 'wb') as f:
+            f.write(response.content)
+    else:
+        raise Exception(f"Error downloading file: {response.status_code}")
 
+def load_precomputed_data(embeddings_path, chunks_path):
+    # Download embeddings if not present locally
+    if not os.path.exists(embeddings_path):
+        print("Downloading embeddings file...")
+        download_file("https://raw.githubusercontent.com/AnishaShende/FastAPIXRailway/main/Data/embeddings.npy", embeddings_path)
+    
+    # Download chunks if not present locally
+    if not os.path.exists(chunks_path):
+        print("Downloading chunks file...")
+        download_file("https://raw.githubusercontent.com/AnishaShende/FastAPIXRailway/main/Data/chunks.json", chunks_path)
+    
+    # Load the embeddings and chunks
+    embeddings = np.load(embeddings_path)
+    
+    with open(chunks_path, 'r') as f:
+        chunks = json.load(f)
+    
+    return embeddings, chunks
+
+# Paths to store downloaded files locally
+embeddings_path = 'data/embeddings.npy'
+chunks_path = 'data/chunks.json'
+
+# Load precomputed data
+embeddings, chunks = load_precomputed_data(embeddings_path, chunks_path)
 # Initialize the sentence transformer
 embedder = SentenceTransformer('all-MiniLM-L6-v2')
 
