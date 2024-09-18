@@ -340,4 +340,4 @@ async def ask_question(query: QueryRequest):
         raise HTTPException(status_code=500, detail="Error in processing the QA request.")
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run(app, host="0.0.0.0", port=int(os.environ.get("PORT", 8000)))
