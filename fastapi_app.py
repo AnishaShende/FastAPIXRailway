@@ -35,8 +35,11 @@ app.add_middleware(
 )
 
 # Paths to precomputed data
-embeddings_path = "data/embeddings.npy"
-chunks_path = "data/chunks.json"
+# embeddings_path = "data/embeddings.npy"
+# chunks_path = "data/chunks.json"
+
+embeddings_path = "https://raw.githubusercontent.com/AnishaShende/FastAPIXRailway/main/Data/chunks.json"
+chunks_path = "https://github.com/AnishaShende/FastAPIXRailway/raw/main/Data/embeddings.npy"
 
 # Initialize the sentence transformer
 embedder = SentenceTransformer('all-MiniLM-L6-v2')
