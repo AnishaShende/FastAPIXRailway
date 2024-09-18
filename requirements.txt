@@ -3,7 +3,7 @@ fastapi==0.115.0
 huggingface_hub==0.24.7
 langchain==0.3.0
 langchain_huggingface==0.1.0
-numpy==2.1.1
+numpy
 pydantic==2.9.2
 PyPDF2==3.0.1
 Requests==2.32.3
