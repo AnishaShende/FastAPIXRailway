@@ -204,5 +204,35 @@ async def ask_question(query: QueryRequest):
         logging.error(f"Error in ask_question: {str(e)}")
         raise HTTPException(status_code=500, detail="Error in processing the QA request.")
 
+# Endpoint to get related cases based on metadata
+@app.get("/related_cases")
+async def get_related_cases(case_id: str, visualization_type: str = "court"):
+    # Find the current case
+    current_case = cases_collection.find_one({"case_id": case_id})
+    if not current_case:
+        return {"error": "Case not found"}
+
+    # Find related cases based on selected visualization type (court, section, judge)
+    related_cases = []
+    if visualization_type == "court":
+        related_cases = list(cases_collection.find({"court": current_case["court"], "case_id": {"$ne": case_id}}))
+    elif visualization_type == "section":
+        related_cases = list(cases_collection.find({"sections_clauses": current_case["sections_clauses"], "case_id": {"$ne": case_id}}))
+    elif visualization_type == "judge":
+        related_cases = list(cases_collection.find({"judges_involved": current_case["judges_involved"], "case_id": {"$ne": case_id}}))
+
+    # Collect the related case_ids and information
+    result = []
+    for case in related_cases:
+        result.append({
+            "case_id": case["case_id"],
+            "case_name": case.get("case_name", "N/A"),
+            "court": case.get("court", "N/A"),
+            "judges_involved": case.get("judges_involved", "N/A"),
+            "sections_clauses": case.get("sections_clauses", "N/A")
+        })
+
+    return result
+
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=int(os.environ.get("PORT", 8000)))
